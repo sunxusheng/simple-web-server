@@ -12,6 +12,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class Server {
@@ -29,30 +31,19 @@ public class Server {
 
         try (ServerSocket socket = new ServerSocket(port)) {
             log.info("Web server listening on port %d (press CTRL-C to quit)", port);
+
+            ExecutorService executorService = Executors.newCachedThreadPool();
             while (true) {
                 TimeUnit.MILLISECONDS.sleep(1);
-                handle(socket);
+                handle(executorService, socket);
             }
         }
     }
 
-    private static void handle(ServerSocket socket) {
-        try (Socket clientSocket = socket.accept();
-             BufferedReader reader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))
-        ) {
-            List<String> requestContent = new ArrayList<>();
-            String temp = reader.readLine();
-            while(temp != null && temp.length() > 0) {
-                requestContent.add(temp);
-                temp = reader.readLine();
-            }
-            Request req = new Request(requestContent);
-            Response res = new Response(req);
-            res.write(clientSocket.getOutputStream());
-        } catch (IOException e) {
-            log.error("IO Error", e);
-        }
-
+    private static void handle(ExecutorService executorService, ServerSocket socket) throws IOException {
+        Socket clientSocket = socket.accept();
+        SocketHandle socketHandle = new SocketHandle(clientSocket);
+        executorService.execute(socketHandle);
     }
 
     /**
