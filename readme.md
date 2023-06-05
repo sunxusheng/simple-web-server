@@ -27,3 +27,19 @@ java -cp build/libs/simple-web-server-1.0.jar liteweb.Server
 bzt performance.yml
 ```
 
+## After threaded
+```
+08:40:59 INFO: Request label stats:
++---------------------------------------------------------+--------+---------+--------+-------+
+| label                                                   | status |    succ | avg_rt | error |
++---------------------------------------------------------+--------+---------+--------+-------+
+| http://127.0.0.1:8080                                   |   OK   | 100.00% |  0.105 |       |
+| http://127.0.0.1:8080/performance.yml                   |   OK   | 100.00% |  0.105 |       |
+| http://127.0.0.1:8080/readme.md                         |   OK   | 100.00% |  0.105 |       |
+| http://127.0.0.1:8080/src/main/java/liteweb/Server.java |   OK   | 100.00% |  0.105 |       |
++---------------------------------------------------------+--------+---------+--------+-------+
+08:40:59 INFO: Test duration: 0:01:15
+08:40:59 INFO: Samples count: 37050, 0.00% failures
+08:40:59 INFO: Average times: total 0.105, latency 0.105, connect 0.000
+```
+
