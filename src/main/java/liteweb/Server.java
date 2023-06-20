@@ -1,5 +1,7 @@
 package liteweb;
 
+import liteweb.cache.LRUCache;
+import liteweb.http.Response;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -14,6 +16,8 @@ public class Server {
 
     private static final Logger log = LogManager.getLogger(Server.class);
     private static final int DEFAULT_PORT = 8080;
+
+    private LRUCache<String, Response>  lruCache = new LRUCache(3);
 
     private ExecutorService executorService = Executors.newCachedThreadPool();
 
@@ -36,7 +40,7 @@ public class Server {
 
     private void handle(ServerSocket socket) throws IOException {
         Socket clientSocket = socket.accept();
-        SocketHandle socketHandle = new SocketHandle(clientSocket);
+        SocketHandle socketHandle = new SocketHandle(clientSocket, lruCache);
         executorService.execute(socketHandle);
     }
 
