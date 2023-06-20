@@ -124,4 +124,8 @@ public class Response {
             log.error("ContentType not found:", e);
         }
     }
+
+    public boolean isResponseLessThan1M() {
+        return 1 > body.length / (1024 * 1024);
+    }
 }

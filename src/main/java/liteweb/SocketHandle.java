@@ -34,8 +34,6 @@ public class SocketHandle implements Runnable {
             while(temp != null && temp.length() > 0) {
                 requestContent.add(temp);
                 temp = reader.readLine();
-
-                System.out.println(temp);
             }
 
             Request req = new Request(requestContent);
@@ -53,7 +51,10 @@ public class SocketHandle implements Runnable {
         Optional<Response> responseOptional = lruCache.get(uri);
         if (!responseOptional.isPresent()) {
             res = new Response(req);
-            lruCache.put(uri, res);
+            if (res.isResponseLessThan1M()) {
+                lruCache.put(uri, res);
+            }
+
         } else {
             res = responseOptional.get();
         }
